@@ -1,0 +1,24 @@
+<div class="dashboard">
+    <div class="control_panel">
+        <div class="info_board">
+            <button id="prev_button">Back</button>
+            <div class="display"></div>
+            <button id="next_button">Next</button>
+        </div>
+        <div class="actions">
+            <form action="#" (submit)="addPlayer(playerName.value)">
+                <button class="action" >+</button>
+                <input type="text" id="player_name" #playerName>
+            </form>
+            <button id="draw_roles">Draw roles</button>
+        </div>
+        <div class="selecte_player_actions" >
+            <p class="selected_player_name">{{selectedPlayerComponent?.playerData?.name}}</p>
+            <button *ngIf="selectedPlayerComponent" (click)="removePlayer()">-</button>
+        </div>
+    </div>
+    <div class="gameboard">
+        <app-gameboard></app-gameboard>
+    </div>
+</div>
+
