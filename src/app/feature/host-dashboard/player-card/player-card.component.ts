@@ -19,4 +19,14 @@ export class PlayerCardComponent {
   selectCard(){
     this.playerSelected.emit(this);
   }
+  playerEliminated(){
+    if(this.playerData.status === "alive"){
+      this.playerData.status = "eliminated";
+    }
+  }
+  playerRestored(){
+    if(this.playerData.status === "eliminated"){
+      this.playerData.status = "alive";
+    }
+  }
 }

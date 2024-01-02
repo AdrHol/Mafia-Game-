@@ -1,4 +1,6 @@
 export interface Player {
     id: number,
-    name: string
+    name: string,
+    status: string,
+    role: string | undefined
 }

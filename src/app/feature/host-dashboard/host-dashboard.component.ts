@@ -3,6 +3,7 @@ import { PlayerCardComponent } from './player-card/player-card.component';
 import { GameboardComponent } from './gameboard/gameboard.component';
 import { Player } from '../../shared/model/player';
 import { NgIf } from '@angular/common';
+import { GameLogicService } from './game-logic.service';
 
 @Component({
   selector: 'app-host-dashboard',
@@ -21,8 +22,12 @@ export class HostDashboardComponent {
 
   selectedPlayerComponent!: PlayerCardComponent | undefined;
 
+  constructor(private gameLogicService: GameLogicService){
+  }
+
   addPlayer(name: string){
-    const playerDa: Player = {id: 1, name: name};
+    if(this.playerComponentsRefs.length < 16){
+    const playerDa: Player = {id: 1, name: name, status: "alive", role: undefined};
     const component = this.playerContainer.createComponent(PlayerCardComponent);
     const componentInstance = component.instance;
     componentInstance.playerData =  playerDa;
@@ -31,9 +36,14 @@ export class HostDashboardComponent {
       this.receiveSelectedPlayer($event);
     });
     this.fullNameInput.nativeElement.value = '';
-    console.log(this.fullNameInput);
+    this.gameLogicService.addPlayer();
+    console.log(this.gameLogicService.getPlayersCount());
     return false;
     }
+    this.unsupportedPlayerCount();
+    return false;
+    }
+
     removePlayer(){
       this.playerComponentsRefs.forEach(reference => {
         if(reference.instance === this.selectedPlayerComponent){
@@ -41,17 +51,24 @@ export class HostDashboardComponent {
           this.selectedPlayerComponent = undefined;
           const index = this.playerComponentsRefs.indexOf(reference)
           this.playerComponentsRefs.splice(index,1);
-          console.log(this.playerComponentsRefs);
+          this.gameLogicService.removePlayer();
         }
       });
     }
 
     receiveSelectedPlayer(playerCard: PlayerCardComponent){
       this.selectedPlayerComponent = playerCard;
-      console.log(playerCard);
     }
-    isPlayerSelected(){
-      return this.selectedPlayerComponent != undefined;
+    
+    drawRoles(){
+      this.gameLogicService.prepareRoles();
+
+      this.playerComponentsRefs.forEach(player => {
+        player.instance.playerData.role = this.gameLogicService.drawRole();
+      })
+    }
+    unsupportedPlayerCount(){
+      alert("Maximum number of players is 16");
     }
 }
  

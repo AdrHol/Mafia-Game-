@@ -7,14 +7,18 @@
         </div>
         <div class="actions">
             <form action="#" (submit)="addPlayer(playerName.value)">
-                <button class="action" >+</button>
+                <button class="action" >Add player</button>
                 <input type="text" id="player_name" #playerName>
             </form>
-            <button id="draw_roles">Draw roles</button>
+            <button id="draw_roles" (click)="drawRoles()">Draw roles</button>
         </div>
-        <div class="selecte_player_actions" >
-            <p class="selected_player_name">{{selectedPlayerComponent?.playerData?.name}}</p>
-            <button *ngIf="selectedPlayerComponent" (click)="removePlayer()">-</button>
+        <div class="selecte_player_actions" *ngIf="selectedPlayerComponent">
+            <p class="selected_player_name">Name: {{selectedPlayerComponent.playerData.name}}</p>
+            <p>Role: {{selectedPlayerComponent.playerData.role}}</p>
+            <p>Status: {{selectedPlayerComponent.playerData.status}}</p>
+            <button (click)="removePlayer()">Remove player</button>
+            <button (click)="selectedPlayerComponent.playerEliminated()">Eliminate player</button>
+            <button (click)="selectedPlayerComponent.playerRestored()">Restore player</button>
         </div>
     </div>
     <div class="gameboard">
