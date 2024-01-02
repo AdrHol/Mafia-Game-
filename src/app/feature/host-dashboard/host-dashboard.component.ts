@@ -13,8 +13,10 @@ import { GameLogicService } from './game-logic.service';
   styleUrl: './host-dashboard.component.css'
 })
 export class HostDashboardComponent {
+
   @ViewChild(GameboardComponent, {read: ViewContainerRef})
   playerContainer!: ViewContainerRef;
+  
   @ViewChild('playerName') 
   fullNameInput: any; 
 
@@ -64,7 +66,7 @@ export class HostDashboardComponent {
       this.gameLogicService.prepareRoles();
 
       this.playerComponentsRefs.forEach(player => {
-        player.instance.playerData.role = this.gameLogicService.drawRole();
+        player.instance.playerData.role = this.gameLogicService.drawRole()?.basicRole;
       })
     }
     unsupportedPlayerCount(){

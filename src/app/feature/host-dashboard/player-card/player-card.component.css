@@ -1,5 +1,11 @@
 .player_card{
     width: 100px;
     height: 100px;
-    border: 1px solid magenta;
+    border: 0.5px solid rgb(44, 43, 44);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(255, 239, 120);
 }

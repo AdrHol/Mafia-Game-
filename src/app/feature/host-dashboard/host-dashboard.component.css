@@ -41,8 +41,23 @@ app-gameboard {
 }
 form{
     display: inline;
-    margin-right: 10px;
 }
 #draw_roles{
     display: inline;
+}
+.simple_button {
+    background-color:  rgb(33, 39, 54);
+    color: cornsilk;
+    padding: 10px;
+    border-radius: 3px;
+    border: 0.5px solid rgb(53, 50, 50);
+}
+.simple_button:hover {
+    background-color: rgb(53, 53, 52);
+}
+.simple_button:active {
+    background-color: rgb(36, 36, 34);
+}
+#player_name {
+    padding: 10px;
 }

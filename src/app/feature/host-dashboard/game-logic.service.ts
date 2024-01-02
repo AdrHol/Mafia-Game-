@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { RoleAssignment } from '../../shared/model/roleAssignment';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,10 @@ export class GameLogicService {
   private numberOfPlayers: number = 0;
   private MAXPLAYERS = 16;
   private MAFIACOUNTS: Map<string, number>;
-  private possibleRoles: string [] = [];
+  private basicRoles: string [] = [];
+  private additionalNeutralRoles: string [] = [];
+  private additionalNegativeRoles: string [] = [];
+
   constructor() {
     this.MAFIACOUNTS = new Map();
     this.MAFIACOUNTS.set("TIER0", 1);
@@ -40,17 +44,19 @@ export class GameLogicService {
 
     let citizens = this.getPlayersCount() - mafia;
     for (let i = 0; i < citizens ; i++){
-      this.possibleRoles.push("Citizen");
+      this.basicRoles.push("Citizen");
     }
     for(let i = 0; i < mafia ; i++ ){
-      this.possibleRoles.push("Mafia");
+      this.basicRoles.push("Mafia");
     }
   }
   drawRole(){
-    const lenghtOfRoles = this.possibleRoles.length;
+    const lenghtOfRoles = this.basicRoles.length;
      if(lenghtOfRoles > 0){
       const randomIndex = Math.floor(Math.random() * lenghtOfRoles);
-      return this.possibleRoles.splice(randomIndex, 1)[0];
+      const basicRole = this.basicRoles.splice(randomIndex, 1)[0];
+      const additionalRole = basicRole === "Maifa"? this.additionalNegativeRoles.pop() : this.additionalNeutralRoles.pop(); 
+      return new RoleAssignment(basicRole, additionalRole);
      } else {
       alert("No roles to draw");
       return
