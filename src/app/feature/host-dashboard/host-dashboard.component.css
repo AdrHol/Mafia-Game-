@@ -48,7 +48,7 @@ form{
 .simple_button {
     background-color:  rgb(33, 39, 54);
     color: cornsilk;
-    padding: 10px;
+    padding: 5px;
     border-radius: 3px;
     border: 0.5px solid rgb(53, 50, 50);
 }
@@ -59,5 +59,6 @@ form{
     background-color: rgb(36, 36, 34);
 }
 #player_name {
-    padding: 10px;
+    padding: 5px;
+    width: 26%;
 }

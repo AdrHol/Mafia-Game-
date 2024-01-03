@@ -4,6 +4,7 @@ import { GameboardComponent } from './gameboard/gameboard.component';
 import { Player } from '../../shared/model/player';
 import { NgIf } from '@angular/common';
 import { GameLogicService } from './game-logic.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-host-dashboard',
@@ -16,34 +17,40 @@ export class HostDashboardComponent {
 
   @ViewChild(GameboardComponent, {read: ViewContainerRef})
   playerContainer!: ViewContainerRef;
-  
+
   @ViewChild('playerName') 
   fullNameInput: any; 
+  @ViewChild('DetectiveTest')
+  detectiveTest: any;
 
   playerComponentsRefs: ComponentRef<PlayerCardComponent>[] = [];
 
   selectedPlayerComponent!: PlayerCardComponent | undefined;
 
-  constructor(private gameLogicService: GameLogicService){
+  constructor(private gameLogicService: GameLogicService, private route: ActivatedRoute){
   }
 
   addPlayer(name: string){
     if(this.playerComponentsRefs.length < 16){
-    const playerDa: Player = {id: 1, name: name, status: "alive", role: undefined};
-    const component = this.playerContainer.createComponent(PlayerCardComponent);
-    const componentInstance = component.instance;
-    componentInstance.playerData =  playerDa;
-    this.playerComponentsRefs.push(component);
-    componentInstance.playerSelected.subscribe(($event)=>{
-      this.receiveSelectedPlayer($event);
-    });
-    this.fullNameInput.nativeElement.value = '';
-    this.gameLogicService.addPlayer();
-    console.log(this.gameLogicService.getPlayersCount());
-    return false;
+      console.log(this.route);
+      const playerDa: Player = {id: 1, name: name, status: "alive", role: undefined, additionalRole: undefined};
+      const component = this.playerContainer.createComponent(PlayerCardComponent);
+      const componentInstance = component.instance;
+      componentInstance.playerData =  playerDa;
+      this.playerComponentsRefs.push(component);
+
+      componentInstance.playerSelected.subscribe(($event)=>{
+        this.receiveSelectedPlayer($event);
+      });
+
+      this.fullNameInput.nativeElement.value = '';
+      this.gameLogicService.addPlayer();
+      console.log(this.gameLogicService.getPlayersCount());
+      return false;
+    } else {
+      this.unsupportedPlayerCount();
+      return false;
     }
-    this.unsupportedPlayerCount();
-    return false;
     }
 
     removePlayer(){
@@ -59,18 +66,26 @@ export class HostDashboardComponent {
     }
 
     receiveSelectedPlayer(playerCard: PlayerCardComponent){
+      this.applySelectedPlayerStyle(playerCard);
       this.selectedPlayerComponent = playerCard;
     }
     
     drawRoles(){
+      // const additionalRoles = this.detectiveTest.value;
       this.gameLogicService.prepareRoles();
-
+      // this.gameLogicService.includeAdditionalRoles();
       this.playerComponentsRefs.forEach(player => {
         player.instance.playerData.role = this.gameLogicService.drawRole()?.basicRole;
       })
     }
     unsupportedPlayerCount(){
       alert("Maximum number of players is 16");
+    }
+    private applySelectedPlayerStyle(playerCard: PlayerCardComponent){
+      if(this.selectedPlayerComponent !== undefined){
+        this.selectedPlayerComponent.appliedStyle.pop();
+      } 
+      playerCard.appliedStyle.push('selected');
     }
 }
  

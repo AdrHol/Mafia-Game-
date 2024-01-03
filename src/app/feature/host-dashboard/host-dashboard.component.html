@@ -11,6 +11,10 @@
                 <input type="text" id="player_name" #playerName>
             </form>
             <button class="simple_button" id="draw_roles" (click)="drawRoles()">Draw roles</button>
+            <button class="simple_button">Additional roles</button>
+        </div>
+        <div>
+            <label for="dick">Detective <input type="checkbox" name="dick" id="dick" #detevtiveTest></label>
         </div>
         <div class="selecte_player_actions" *ngIf="selectedPlayerComponent">
             <p class="selected_player_name">Name: {{selectedPlayerComponent.playerData.name}}</p>

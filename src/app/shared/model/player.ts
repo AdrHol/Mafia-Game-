@@ -2,5 +2,6 @@ export interface Player {
     id: number,
     name: string,
     status: string,
-    role: string | undefined
+    role: string | undefined,
+    additionalRole: string | undefined;
 }

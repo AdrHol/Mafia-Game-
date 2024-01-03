@@ -63,6 +63,10 @@ export class GameLogicService {
      }
   }
 
+  includeAdditionalRoles(roles: string[]){
+    
+  }
+
   private computeMafiaMembers(){
     const memebers = this.getPlayersCount();
     switch(true) {

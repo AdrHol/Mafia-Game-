@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Player } from '../../../shared/model/player';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-player-card',
   standalone: true,
-  imports: [],
+  imports: [NgClass],
   templateUrl: './player-card.component.html',
   styleUrl: './player-card.component.css'
 })
@@ -12,6 +13,8 @@ export class PlayerCardComponent {
 
   @Input()
   playerData!: Player; 
+
+  appliedStyle: String[] = ["player_card"]; 
 
   @Output()
   playerSelected: EventEmitter<PlayerCardComponent> = new EventEmitter<PlayerCardComponent>();
