@@ -1,15 +1,16 @@
-import { AfterViewInit, Component, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { PlayerCardComponent } from './player-card/player-card.component';
 import { GameboardComponent } from './gameboard/gameboard.component';
+import { AdditionalRolesComponent } from './additional-roles/additional-roles.component';
 import { Player } from '../../shared/model/player';
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { GameLogicService } from './game-logic.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-host-dashboard',
   standalone: true,
-  imports: [GameboardComponent, NgIf],
+  imports: [GameboardComponent, NgIf, AdditionalRolesComponent, NgClass],
   templateUrl: './host-dashboard.component.html',
   styleUrl: './host-dashboard.component.css'
 })
@@ -20,8 +21,8 @@ export class HostDashboardComponent {
 
   @ViewChild('playerName') 
   fullNameInput: any; 
-  @ViewChild('DetectiveTest')
-  detectiveTest: any;
+  @ViewChild('additionalRoles')
+  additionalRolesComponent: any;
 
   playerComponentsRefs: ComponentRef<PlayerCardComponent>[] = [];
 
@@ -75,17 +76,27 @@ export class HostDashboardComponent {
       this.gameLogicService.prepareRoles();
       // this.gameLogicService.includeAdditionalRoles();
       this.playerComponentsRefs.forEach(player => {
-        player.instance.playerData.role = this.gameLogicService.drawRole()?.basicRole;
+        const role = this.gameLogicService.drawRole()?.basicRole;
+        if(role !== undefined){
+          player.instance.applyRole(role);
+        }
       })
     }
+
     unsupportedPlayerCount(){
       alert("Maximum number of players is 16");
     }
+
     private applySelectedPlayerStyle(playerCard: PlayerCardComponent){
       if(this.selectedPlayerComponent !== undefined){
-        this.selectedPlayerComponent.appliedStyle.pop();
+        this.selectedPlayerComponent.removeStyle('selected');
       } 
-      playerCard.appliedStyle.push('selected');
+      playerCard.applyStyle('selected');
+    }
+    expandAdditionalRoles(){
+      console.log("elooo");
+      console.log(this.additionalRolesComponent);
+      this.additionalRolesComponent.switchVisibility();
     }
 }
  

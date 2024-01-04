@@ -9,6 +9,15 @@
     justify-content: center;
     background-color: rgb(255, 239, 120);
 }
-.player_card.selected{
-    background-color: aquamarine;
+.Mafia {
+    background-color: rgb(119, 24, 24);
+    color: cornsilk;
 }
+.selected{
+    box-shadow: 3px 3px 3px grey;
+}
+
+.eliminated {
+    opacity: 50%;
+}
+

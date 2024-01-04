@@ -23,13 +23,32 @@ export class PlayerCardComponent {
     this.playerSelected.emit(this);
   }
   playerEliminated(){
-    if(this.playerData.status === "alive"){
-      this.playerData.status = "eliminated";
+    if(this.playerData.status === 'alive'){
+      this.playerData.status = 'eliminated';
+      this.applyStyle('eliminated');
     }
   }
   playerRestored(){
-    if(this.playerData.status === "eliminated"){
-      this.playerData.status = "alive";
+    if(this.playerData.status === 'eliminated'){
+      this.playerData.status = 'alive';
+      this.removeStyle('eliminated');
+    }
+  }
+  applyRole(role: string){
+    const currentRole = this.playerData.role;
+    if(currentRole !== undefined){
+      this.removeStyle(currentRole);
+    }
+    this.playerData.role = role;
+    this.applyStyle(role);
+  }
+  applyStyle(style: string){
+    this.appliedStyle.push(style);
+  }
+  removeStyle(style: string){
+    const index = this.appliedStyle.indexOf(style);
+    if(index > -1){
+      this.appliedStyle.splice(index,1);
     }
   }
 }
