@@ -14,11 +14,11 @@
             <button class="simple_button" (click)="expandAdditionalRoles()">Additional roles</button>
         </div>
         <div>
-            <app-additional-roles #additionalRoles></app-additional-roles>
+            <app-additional-roles #additionalRoles [roles]="additionalRolesList"></app-additional-roles>
         </div>
         <div class="selecte_player_actions" *ngIf="selectedPlayerComponent">
             <p class="selected_player_name">Name: {{selectedPlayerComponent.playerData.name}}</p>
-            <p>Role: {{selectedPlayerComponent.playerData.role}}</p>
+            <p>Role: {{selectedPlayerComponent.playerData.role}} {{selectedPlayerComponent.playerData.additionalRole}}</p>
             <p>Status: {{selectedPlayerComponent.playerData.status}}</p>
             <button class="simple_button" (click)="removePlayer()">Remove player</button>
             <button class="simple_button" (click)="selectedPlayerComponent.playerEliminated()">Eliminate player</button>

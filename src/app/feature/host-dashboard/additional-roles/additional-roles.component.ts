@@ -1,11 +1,11 @@
-import { NgClass } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
-import { AdditionalRolesService } from './additional-roles.service';
+import { NgClass, NgFor } from '@angular/common';
+import { Component, Input, ViewChild } from '@angular/core';
+import { AdditionalRole } from '../../../shared/model/additionalRole';
 
 @Component({
   selector: 'app-additional-roles',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, NgFor],
   templateUrl: './additional-roles.component.html',
   styleUrl: './additional-roles.component.css'
 })
@@ -14,16 +14,19 @@ export class AdditionalRolesComponent {
   @ViewChild('additionalRoles')
   additionalRoles: any;
   
-  roles: string [];
+  @Input()
+  roles!: AdditionalRole [];
 
+  private checkedRoles: number[] = [];
+  
   isVisible: boolean = false;
   appliedStyles = {
     'visible' : this.isVisible,
     'hidden' : !this.isVisible
   }
 
-  constructor(private additionalRolesService AdditionalRolesService){
-    this.roles = additionalRolesService.load();
+  constructor(){
+    // this.roles = [];
   }
 
   switchVisibility(){
@@ -32,5 +35,16 @@ export class AdditionalRolesComponent {
       'visible' : this.isVisible,
       'hidden' : !this.isVisible
     }
+  }
+
+  onCheckboxChange(roleId: number){
+    if(this.checkedRoles.includes(roleId)){
+      this.checkedRoles = this.checkedRoles.filter(element => element !== roleId);
+    } else {
+      this.checkedRoles.push(roleId);
+    }
+  }
+  getCheckedRoles(){
+    return this.checkedRoles;
   }
 }

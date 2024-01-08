@@ -1,3 +1,7 @@
-<div #additionalRoles [ngClass]="appliedStyles">
-    <p>additional-roles works!</p>
+<div [ngClass]="appliedStyles">
+    <form action="">
+        <label *ngFor="let role of roles">
+            <span>{{role.displayValue}}</span> <input type="checkbox" value={{role.id}} (change)="onCheckboxChange(role.id)">
+        </label>
+    </form>
 </div>

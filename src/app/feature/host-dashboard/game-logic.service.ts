@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RoleAssignment } from '../../shared/model/roleAssignment';
+import { AdditionalRole } from '../../shared/model/additionalRole';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,9 @@ export class GameLogicService {
   private MAXPLAYERS = 16;
   private MAFIACOUNTS: Map<string, number>;
   private basicRoles: string [] = [];
-  private additionalNeutralRoles: string [] = [];
-  private additionalNegativeRoles: string [] = [];
+  private additionalNeutralRoles: AdditionalRole[] = [];
+  private additionalNegativeRoles: AdditionalRole[] = [];
+  private activeAdditionalRoles: number[] = [];
 
   constructor() {
     this.MAFIACOUNTS = new Map();
@@ -34,9 +36,10 @@ export class GameLogicService {
       this.numberOfPlayers--;
     }
   }
-  prepareRoles(){
+  prepareRoles(additionalRolesId: number[]){
     const mafia = this.computeMafiaMembers();
-
+    this.activeAdditionalRoles = additionalRolesId;
+    
     if(mafia === undefined){
       alert("Mafia is undefined");
       return;
@@ -55,8 +58,8 @@ export class GameLogicService {
      if(lenghtOfRoles > 0){
       const randomIndex = Math.floor(Math.random() * lenghtOfRoles);
       const basicRole = this.basicRoles.splice(randomIndex, 1)[0];
-      const additionalRole = basicRole === "Maifa"? this.additionalNegativeRoles.pop() : this.additionalNeutralRoles.pop(); 
-      return new RoleAssignment(basicRole, additionalRole);
+      const additionalRole = basicRole === "Mafia"? this.additionalNegativeRoles.pop() : this.additionalNeutralRoles.pop(); 
+      return new RoleAssignment(basicRole, additionalRole?.displayValue);
      } else {
       alert("No roles to draw");
       return
@@ -84,5 +87,13 @@ export class GameLogicService {
         return 0;
     }
   }
-
+  loadAdditionalRoles(roles: AdditionalRole[]){
+    roles.forEach(role =>{
+      if(role.isVillain){
+        this.additionalNegativeRoles.push(role);
+      } else {
+        this.additionalNeutralRoles.push(role);
+      }
+    })
+  }
 }

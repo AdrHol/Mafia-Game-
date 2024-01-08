@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Player } from '../../../shared/model/player';
 import { NgClass } from '@angular/common';
+import { RoleAssignment } from '../../../shared/model/roleAssignment';
 
 @Component({
   selector: 'app-player-card',
@@ -34,13 +35,14 @@ export class PlayerCardComponent {
       this.removeStyle('eliminated');
     }
   }
-  applyRole(role: string){
+  applyRole(role: RoleAssignment){
     const currentRole = this.playerData.role;
     if(currentRole !== undefined){
       this.removeStyle(currentRole);
     }
-    this.playerData.role = role;
-    this.applyStyle(role);
+    this.playerData.role = role.basicRole;
+    this.playerData.additionalRole = role.additionalRole;
+    this.applyStyle(role.basicRole);
   }
   applyStyle(style: string){
     this.appliedStyle.push(style);

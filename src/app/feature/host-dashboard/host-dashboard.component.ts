@@ -6,6 +6,8 @@ import { Player } from '../../shared/model/player';
 import { NgClass, NgIf } from '@angular/common';
 import { GameLogicService } from './game-logic.service';
 import { ActivatedRoute } from '@angular/router';
+import { DataService } from '../../core/data.service';
+import { AdditionalRole } from '../../shared/model/additionalRole';
 
 @Component({
   selector: 'app-host-dashboard',
@@ -21,14 +23,19 @@ export class HostDashboardComponent {
 
   @ViewChild('playerName') 
   fullNameInput: any; 
+
   @ViewChild('additionalRoles')
   additionalRolesComponent: any;
+  
+  additionalRolesList: AdditionalRole[];
 
   playerComponentsRefs: ComponentRef<PlayerCardComponent>[] = [];
 
   selectedPlayerComponent!: PlayerCardComponent | undefined;
 
-  constructor(private gameLogicService: GameLogicService, private route: ActivatedRoute){
+  constructor(private gameLogicService: GameLogicService, private dataService: DataService, private route: ActivatedRoute){
+                this.additionalRolesList = dataService.fetchAdditionalRoles();
+                this.gameLogicService.loadAdditionalRoles(this.additionalRolesList);
   }
 
   addPlayer(name: string){
@@ -72,11 +79,9 @@ export class HostDashboardComponent {
     }
     
     drawRoles(){
-      // const additionalRoles = this.detectiveTest.value;
-      this.gameLogicService.prepareRoles();
-      // this.gameLogicService.includeAdditionalRoles();
+      this.gameLogicService.prepareRoles(this.additionalRolesComponent.getCheckedRoles());
       this.playerComponentsRefs.forEach(player => {
-        const role = this.gameLogicService.drawRole()?.basicRole;
+        const role = this.gameLogicService.drawRole();
         if(role !== undefined){
           player.instance.applyRole(role);
         }
@@ -93,9 +98,8 @@ export class HostDashboardComponent {
       } 
       playerCard.applyStyle('selected');
     }
+
     expandAdditionalRoles(){
-      console.log("elooo");
-      console.log(this.additionalRolesComponent);
       this.additionalRolesComponent.switchVisibility();
     }
 }
