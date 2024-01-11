@@ -41,7 +41,7 @@ export class PlayerCardComponent {
       this.removeStyle(currentRole);
     }
     this.playerData.role = role.basicRole;
-    this.playerData.additionalRole = role.additionalRole;
+    this.playerData.additionalRole = role.additionalRole?.displayValue;
     this.applyStyle(role.basicRole);
   }
   applyStyle(style: string){

@@ -12,7 +12,7 @@ export class GameLogicService {
   private basicRoles: string [] = [];
   private additionalNeutralRoles: AdditionalRole[] = [];
   private additionalNegativeRoles: AdditionalRole[] = [];
-  private activeAdditionalRoles: number[] = [];
+  private activeAdditionalRoles: AdditionalRole[] = [];
 
   constructor() {
     this.MAFIACOUNTS = new Map();
@@ -26,40 +26,50 @@ export class GameLogicService {
   getPlayersCount(){
     return this.numberOfPlayers;
   }
+
   addPlayer(){
     if(this.numberOfPlayers < this.MAXPLAYERS){
       this.numberOfPlayers++;
     }
   }
+
   removePlayer(){
     if(this.numberOfPlayers > 0){
       this.numberOfPlayers--;
     }
   }
-  prepareRoles(additionalRolesId: number[]){
+
+  prepareRoles(additionalRoles: AdditionalRole[]){
     const mafia = this.computeMafiaMembers();
-    this.activeAdditionalRoles = additionalRolesId;
-    
+
     if(mafia === undefined){
       alert("Mafia is undefined");
       return;
     }
-
+    
     let citizens = this.getPlayersCount() - mafia;
+
     for (let i = 0; i < citizens ; i++){
       this.basicRoles.push("Citizen");
     }
-    for(let i = 0; i < mafia ; i++ ){
+    for(let i = 0; i < mafia ; i++){
       this.basicRoles.push("Mafia");
     }
+
+    this.loadSelectedRoles(additionalRoles);
+    this.fillRemainingAdditionalRoles(citizens, mafia);
   }
+
   drawRole(){
     const lenghtOfRoles = this.basicRoles.length;
      if(lenghtOfRoles > 0){
-      const randomIndex = Math.floor(Math.random() * lenghtOfRoles);
-      const basicRole = this.basicRoles.splice(randomIndex, 1)[0];
-      const additionalRole = basicRole === "Mafia"? this.additionalNegativeRoles.pop() : this.additionalNeutralRoles.pop(); 
-      return new RoleAssignment(basicRole, additionalRole?.displayValue);
+      const randomBasicRoleIndex = Math.floor(Math.random() * lenghtOfRoles);
+      const randomNeutralRoleIndex = Math.floor(Math.random() * this.additionalNeutralRoles.length);
+      const randomNegativeRoleIndex = Math.floor(Math.random() * this.additionalNegativeRoles.length);
+      const basicRole = this.basicRoles.splice(randomBasicRoleIndex, 1)[0];
+      const additionalRole = basicRole === "Mafia"? this.additionalNegativeRoles.splice(randomNegativeRoleIndex,1)[0] 
+                                                  : this.additionalNeutralRoles.splice(randomNeutralRoleIndex, 1)[0]; 
+      return new RoleAssignment(basicRole, additionalRole);
      } else {
       alert("No roles to draw");
       return
@@ -87,13 +97,33 @@ export class GameLogicService {
         return 0;
     }
   }
+
   loadAdditionalRoles(roles: AdditionalRole[]){
-    roles.forEach(role =>{
-      if(role.isVillain){
-        this.additionalNegativeRoles.push(role);
+    // roles.forEach(role =>{
+    //   if(role.isVillain){
+    //     this.additionalNegativeRoles.push(role);
+    //   } else {
+    //     this.additionalNeutralRoles.push(role);
+    //   }
+    // })
+  }
+
+  private loadSelectedRoles(additionalRoles: AdditionalRole[]){
+    additionalRoles.forEach(additionalRole => {
+      if(additionalRole.isVillain){
+        this.additionalNegativeRoles.push(additionalRole);
       } else {
-        this.additionalNeutralRoles.push(role);
+        this.additionalNeutralRoles.push(additionalRole);
       }
     })
+  }
+
+  private fillRemainingAdditionalRoles(numberOfCitizens: number, numberOfVillains: number){
+    while(numberOfCitizens > this.additionalNeutralRoles.length){
+      this.additionalNeutralRoles.push(new AdditionalRole(0, undefined, false));
+    }
+    while(numberOfVillains > this.additionalNegativeRoles.length){
+      this.additionalNegativeRoles.push(new AdditionalRole(0, undefined, true));
+    }
   }
 }

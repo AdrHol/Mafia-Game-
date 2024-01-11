@@ -17,7 +17,7 @@ export class AdditionalRolesComponent {
   @Input()
   roles!: AdditionalRole [];
 
-  private checkedRoles: number[] = [];
+  private checkedRoles: AdditionalRole[] = [];
   
   isVisible: boolean = false;
   appliedStyles = {
@@ -26,7 +26,7 @@ export class AdditionalRolesComponent {
   }
 
   constructor(){
-    // this.roles = [];
+    // this.roles = 
   }
 
   switchVisibility(){
@@ -37,12 +37,15 @@ export class AdditionalRolesComponent {
     }
   }
 
-  onCheckboxChange(roleId: number){
-    if(this.checkedRoles.includes(roleId)){
-      this.checkedRoles = this.checkedRoles.filter(element => element !== roleId);
+  onCheckboxChange(role: AdditionalRole){
+    const findRole = this.checkedRoles.findIndex(element => element.id === role.id);
+
+    if(findRole >= 0){
+      this.checkedRoles = this.checkedRoles.filter(roleElement => roleElement.id !== role.id);
     } else {
-      this.checkedRoles.push(roleId);
+      this.checkedRoles.push(role);
     }
+
   }
   getCheckedRoles(){
     return this.checkedRoles;

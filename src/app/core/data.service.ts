@@ -8,7 +8,7 @@ export class DataService {
 
   private additionalRoles: AdditionalRole[] = [];
   constructor() { 
-    this.additionalRoles = [new AdditionalRole(1, 'Detevtive', false), new AdditionalRole(2, 'Boss', true)];
+    this.additionalRoles = [new AdditionalRole(1, 'Detevtive', false), new AdditionalRole(2, 'Boss', true), new AdditionalRole(3, 'Kot', false)];
   }
 
   fetchAdditionalRoles(){
