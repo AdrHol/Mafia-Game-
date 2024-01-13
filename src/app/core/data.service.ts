@@ -14,4 +14,20 @@ export class DataService {
   fetchAdditionalRoles(){
     return this.additionalRoles;
   }
+  fetchGameMessages(){
+    return {
+      everyoneSleep: 'Wszyscy spia',
+      mafiaWake: 'Mafia się budzi',
+      citizensWake: 'Budzą się mieszkancy'
+    }
+  }
+  loadMafiaCounts(){
+    const mafiaCounts = new Map();
+    mafiaCounts.set("TIER0", 1);
+    mafiaCounts.set("TIER1", 2);
+    mafiaCounts.set("TIER2", 3);
+    mafiaCounts.set("TIER3", 4);
+    mafiaCounts.set("TIER4", 5);
+    return mafiaCounts;
+  }
 }

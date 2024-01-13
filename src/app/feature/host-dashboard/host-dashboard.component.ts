@@ -26,12 +26,17 @@ export class HostDashboardComponent {
 
   @ViewChild('additionalRoles')
   additionalRolesComponent: any;
-  
+
+  @ViewChild('startGameButton')
+  startGameButton: any;
+
   additionalRolesList: AdditionalRole[];
 
   playerComponentsRefs: ComponentRef<PlayerCardComponent>[] = [];
 
   selectedPlayerComponent!: PlayerCardComponent | undefined;
+
+  displayedMessage: string = '';
 
   constructor(private gameLogicService: GameLogicService, private dataService: DataService, private route: ActivatedRoute){
                 this.additionalRolesList = dataService.fetchAdditionalRoles();
@@ -88,10 +93,14 @@ export class HostDashboardComponent {
       })
     }
 
+    startGame(event: Event){
+      this.gameLogicService.start();
+    }
+
     unsupportedPlayerCount(){
       alert("Maximum number of players is 16");
     }
-
+    
     private applySelectedPlayerStyle(playerCard: PlayerCardComponent){
       if(this.selectedPlayerComponent !== undefined){
         this.selectedPlayerComponent.removeStyle('selected');
@@ -101,6 +110,9 @@ export class HostDashboardComponent {
 
     expandAdditionalRoles(){
       this.additionalRolesComponent.switchVisibility();
+    }
+    checkGameState(){
+      return !this.gameLogicService.getGameState();
     }
 }
  

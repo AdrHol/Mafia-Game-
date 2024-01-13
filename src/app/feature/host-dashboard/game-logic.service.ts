@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { RoleAssignment } from '../../shared/model/roleAssignment';
 import { AdditionalRole } from '../../shared/model/additionalRole';
+import { RoundLogicService } from '../../core/round-logic.service';
+import { DataService } from '../../core/data.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,15 +15,11 @@ export class GameLogicService {
   private basicRoles: string [] = [];
   private additionalNeutralRoles: AdditionalRole[] = [];
   private additionalNegativeRoles: AdditionalRole[] = [];
-  private activeAdditionalRoles: AdditionalRole[] = [];
+  private isGameStarted: boolean;
 
-  constructor() {
-    this.MAFIACOUNTS = new Map();
-    this.MAFIACOUNTS.set("TIER0", 1);
-    this.MAFIACOUNTS.set("TIER1", 2);
-    this.MAFIACOUNTS.set("TIER2", 3);
-    this.MAFIACOUNTS.set("TIER3", 4);
-    this.MAFIACOUNTS.set("TIER4", 5);
+  constructor(private roundLogicService: RoundLogicService, private dataService: DataService) {
+    this.MAFIACOUNTS = dataService.loadMafiaCounts();
+    this.isGameStarted = false;
   }
 
   getPlayersCount(){
@@ -117,7 +116,13 @@ export class GameLogicService {
       }
     })
   }
-
+  
+  start(){
+    this.isGameStarted = true;
+  }
+  getGameState(){
+    return this.isGameStarted;
+  }
   private fillRemainingAdditionalRoles(numberOfCitizens: number, numberOfVillains: number){
     while(numberOfCitizens > this.additionalNeutralRoles.length){
       this.additionalNeutralRoles.push(new AdditionalRole(0, undefined, false));
