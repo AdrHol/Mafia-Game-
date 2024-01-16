@@ -100,7 +100,7 @@ export class HostDashboardComponent {
     unsupportedPlayerCount(){
       alert("Maximum number of players is 16");
     }
-    
+
     private applySelectedPlayerStyle(playerCard: PlayerCardComponent){
       if(this.selectedPlayerComponent !== undefined){
         this.selectedPlayerComponent.removeStyle('selected');
@@ -113,6 +113,9 @@ export class HostDashboardComponent {
     }
     checkGameState(){
       return !this.gameLogicService.getGameState();
+    }
+    getNextMessage(){
+      this.displayedMessage = this.gameLogicService.getNextMessage();
     }
 }
  

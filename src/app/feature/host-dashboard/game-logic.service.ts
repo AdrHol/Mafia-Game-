@@ -3,6 +3,7 @@ import { RoleAssignment } from '../../shared/model/roleAssignment';
 import { AdditionalRole } from '../../shared/model/additionalRole';
 import { RoundLogicService } from '../../core/round-logic.service';
 import { DataService } from '../../core/data.service';
+import { Message } from '../../shared/model/Message';
 
 
 @Injectable({
@@ -15,7 +16,9 @@ export class GameLogicService {
   private basicRoles: string [] = [];
   private additionalNeutralRoles: AdditionalRole[] = [];
   private additionalNegativeRoles: AdditionalRole[] = [];
+  private finalRoles: RoleAssignment[] = [];
   private isGameStarted: boolean;
+  private message: Message | undefined;
 
   constructor(private roundLogicService: RoundLogicService, private dataService: DataService) {
     this.MAFIACOUNTS = dataService.loadMafiaCounts();
@@ -67,8 +70,10 @@ export class GameLogicService {
       const randomNegativeRoleIndex = Math.floor(Math.random() * this.additionalNegativeRoles.length);
       const basicRole = this.basicRoles.splice(randomBasicRoleIndex, 1)[0];
       const additionalRole = basicRole === "Mafia"? this.additionalNegativeRoles.splice(randomNegativeRoleIndex,1)[0] 
-                                                  : this.additionalNeutralRoles.splice(randomNeutralRoleIndex, 1)[0]; 
-      return new RoleAssignment(basicRole, additionalRole);
+                                                  : this.additionalNeutralRoles.splice(randomNeutralRoleIndex, 1)[0];
+      const roleAssignment = new RoleAssignment(basicRole, additionalRole);
+      this.finalRoles.push(roleAssignment);
+      return roleAssignment;
      } else {
       alert("No roles to draw");
       return
@@ -119,16 +124,35 @@ export class GameLogicService {
   
   start(){
     this.isGameStarted = true;
+    const roles = this.finalRoles.filter(role => role != undefined).map(role => role.additionalRole as AdditionalRole);
+    this.roundLogicService.startGame(roles);
   }
+
   getGameState(){
     return this.isGameStarted;
   }
-  private fillRemainingAdditionalRoles(numberOfCitizens: number, numberOfVillains: number){
-    while(numberOfCitizens > this.additionalNeutralRoles.length){
-      this.additionalNeutralRoles.push(new AdditionalRole(0, undefined, false));
-    }
-    while(numberOfVillains > this.additionalNegativeRoles.length){
-      this.additionalNegativeRoles.push(new AdditionalRole(0, undefined, true));
+  getNextMessage(){
+    if(this.message === undefined){
+      const nextMessage = this.roundLogicService.getMessage();
+      if(nextMessage !== undefined){
+        this.message = nextMessage
+        return this.message.getDisplayedWakeMessage() || 'No message';
+      }else {
+        return "NO MORE MESSAGES";
+      }
+    } else {
+      const message = this.message?.getDisplayedSleepMessage() || "No more messages";
+      this.message = undefined;
+      return message;
     }
   }
+  private fillRemainingAdditionalRoles(numberOfCitizens: number, numberOfVillains: number){
+    while(numberOfCitizens > this.additionalNeutralRoles.length){
+      this.additionalNeutralRoles.push(new AdditionalRole(0, undefined, false, false));
+    }
+    while(numberOfVillains > this.additionalNegativeRoles.length){
+      this.additionalNegativeRoles.push(new AdditionalRole(0, undefined, true, false));
+    }
+  }
+
 }

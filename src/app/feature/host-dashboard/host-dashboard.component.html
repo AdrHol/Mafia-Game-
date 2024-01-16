@@ -6,7 +6,7 @@
                 <button (click)="startGame($event)" #startGameButton *ngIf="checkGameState()">Start Game</button>
                 <p>{{displayedMessage}}</p>
             </div>
-            <button id="next_button">Next</button>
+            <button id="next_button" (click)="getNextMessage()">Next</button>
         </div>
         <div class="actions">
             <form action="#" (submit)="addPlayer(playerName.value)">
