@@ -28,7 +28,11 @@ export class RoundLogicService {
     // this.winningConditionChecker.getResult();
   }
   getMessage(){
-    return this.roundQueue.shift();
+    if(this.roundQueue.length > 0){
+      return this.roundQueue.shift();
+    } else {
+      return undefined;
+    }
   }
   private playRound(){
 

@@ -8,6 +8,7 @@ import { GameLogicService } from './game-logic.service';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../../core/data.service';
 import { AdditionalRole } from '../../shared/model/additionalRole';
+import { PlayerDataService } from '../../core/player-data.service';
 
 @Component({
   selector: 'app-host-dashboard',
@@ -32,25 +33,30 @@ export class HostDashboardComponent {
 
   additionalRolesList: AdditionalRole[];
 
-  playerComponentsRefs: ComponentRef<PlayerCardComponent>[] = [];
+  // playerComponentsRefs: ComponentRef<PlayerCardComponent>[] = [];
 
   selectedPlayerComponent!: PlayerCardComponent | undefined;
 
   displayedMessage: string = '';
 
-  constructor(private gameLogicService: GameLogicService, private dataService: DataService, private route: ActivatedRoute){
-                this.additionalRolesList = dataService.fetchAdditionalRoles();
-                this.gameLogicService.loadAdditionalRoles(this.additionalRolesList);
+  constructor(private gameLogicService: GameLogicService, 
+              private dataService: DataService,
+              private playersService: PlayerDataService,
+              private route: ActivatedRoute,){
+        this.additionalRolesList = dataService.fetchAdditionalRoles();
+        this.gameLogicService.loadAdditionalRoles(this.additionalRolesList);
   }
 
   addPlayer(name: string){
-    if(this.playerComponentsRefs.length < 16){
+    if(this.playersService.getNumberOfPlayers() < 16){
       console.log(this.route);
-      const playerDa: Player = {id: 1, name: name, status: "alive", role: undefined, additionalRole: undefined};
       const component = this.playerContainer.createComponent(PlayerCardComponent);
+      // const playerEntity: Player = new Player (1, name, "alive", undefined, undefined, component);
+      this.playersService.createPlayer(1, name, "alive", undefined, undefined, component);
       const componentInstance = component.instance;
-      componentInstance.playerData =  playerDa;
-      this.playerComponentsRefs.push(component);
+      // componentInstance.playerData =  playerEntity;
+      
+      // this.playerComponentsRefs.push(component);
 
       componentInstance.playerSelected.subscribe(($event)=>{
         this.receiveSelectedPlayer($event);
@@ -67,15 +73,15 @@ export class HostDashboardComponent {
     }
 
     removePlayer(){
-      this.playerComponentsRefs.forEach(reference => {
-        if(reference.instance === this.selectedPlayerComponent){
-          reference.destroy();
-          this.selectedPlayerComponent = undefined;
-          const index = this.playerComponentsRefs.indexOf(reference)
-          this.playerComponentsRefs.splice(index,1);
-          this.gameLogicService.removePlayer();
-        }
-      });
+      // this.playerComponentsRefs.forEach(reference => {
+      //   if(reference.instance === this.selectedPlayerComponent){
+      //     reference.destroy();
+      //     this.selectedPlayerComponent = undefined;
+      //     const index = this.playerComponentsRefs.indexOf(reference)
+      //     this.playerComponentsRefs.splice(index,1);
+      //     this.gameLogicService.removePlayer();
+      //   }
+      // });
     }
 
     receiveSelectedPlayer(playerCard: PlayerCardComponent){
@@ -84,13 +90,13 @@ export class HostDashboardComponent {
     }
     
     drawRoles(){
-      this.gameLogicService.prepareRoles(this.additionalRolesComponent.getCheckedRoles());
-      this.playerComponentsRefs.forEach(player => {
-        const role = this.gameLogicService.drawRole();
-        if(role !== undefined){
-          player.instance.applyRole(role);
-        }
-      })
+      // this.gameLogicService.prepareRoles(this.additionalRolesComponent.getCheckedRoles());
+      // this.playerComponentsRefs.forEach(player => {
+      //   const role = this.gameLogicService.drawRole();
+      //   if(role !== undefined){
+      //     player.instance.applyRole(role);
+      //   }
+      // })
     }
 
     startGame(event: Event){

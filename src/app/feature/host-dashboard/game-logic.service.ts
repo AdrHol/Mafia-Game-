@@ -19,7 +19,7 @@ export class GameLogicService {
   private finalRoles: RoleAssignment[] = [];
   private isGameStarted: boolean;
   private message: Message | undefined;
-
+// playerService with players state logic !!!!! 
   constructor(private roundLogicService: RoundLogicService, private dataService: DataService) {
     this.MAFIACOUNTS = dataService.loadMafiaCounts();
     this.isGameStarted = false;
@@ -123,9 +123,11 @@ export class GameLogicService {
   }
   
   start(){
-    this.isGameStarted = true;
-    const roles = this.finalRoles.filter(role => role != undefined).map(role => role.additionalRole as AdditionalRole);
-    this.roundLogicService.startGame(roles);
+    if(this.numberOfPlayersCheck()){
+      this.isGameStarted = true;
+      const roles = this.finalRoles.filter(role => role != undefined).map(role => role.additionalRole as AdditionalRole);
+      this.roundLogicService.startGame(roles);
+    }
   }
 
   getGameState(){
@@ -154,5 +156,15 @@ export class GameLogicService {
       this.additionalNegativeRoles.push(new AdditionalRole(0, undefined, true, false));
     }
   }
-
+  private startGameConditionCheck(){
+    return this.numberOfPlayersCheck();
+  }
+  private numberOfPlayersCheck(){
+    if(this.numberOfPlayers < 3){
+      alert("Not enough players");
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
