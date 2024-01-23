@@ -1,6 +1,7 @@
-import {ComponentRef} from '@angular/core';
+import {ComponentRef, EventEmitter} from '@angular/core';
 import { PlayerCardComponent } from '../../feature/host-dashboard/player-card/player-card.component';
 import { PlayerDisplayValues } from './playerDisplayValues';
+import { Subscription } from 'rxjs';
 
 export class Player {
     id: number;
@@ -9,6 +10,7 @@ export class Player {
     role: string | undefined;
     additionalRole: string | undefined;
     playerComponent: ComponentRef<PlayerCardComponent>;
+    stateEvent: Subscription;
 
     constructor(id: number,
                 name: string,
@@ -22,6 +24,9 @@ export class Player {
         this.role = role;
         this.additionalRole = additionalRole;
         this.playerComponent = component;
+        this.stateEvent = component.instance.playerEliminatedEvent.subscribe((e) => {
+            this.playerStateChange(e);
+        });
     }
     getPlayerData(): PlayerDisplayValues{
         return {'id' : this.id,
@@ -29,5 +34,14 @@ export class Player {
                 'role' : this.role,
                 'status' : this.status,
                 'additionalRole': this.additionalRole};
+    }
+    playerStateChange(isEliminated: boolean){
+        isEliminated ? this.status = 'Eliminated' : this.status = 'Alive';
+    }
+    updateComponent(){
+        this.playerComponent.instance.playerData = this.getPlayerData();
+    }
+    unsubscribe(){
+        this.stateEvent.unsubscribe();
     }
 }

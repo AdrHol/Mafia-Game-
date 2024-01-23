@@ -22,6 +22,9 @@ export class PlayerCardComponent {
   @Output()
   playerSelected: EventEmitter<PlayerCardComponent> = new EventEmitter<PlayerCardComponent>();
 
+  @Output()
+  playerEliminatedEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+  
   constructor(private playerService: PlayerDataService){};
 
   selectCard(){
@@ -32,12 +35,14 @@ export class PlayerCardComponent {
     if(this.playerData.status === 'alive'){
       this.playerData.status = 'eliminated';
       this.applyStyle('eliminated');
+      this.playerEliminatedEvent.emit(true);
     }
   }
   playerRestored(){
     if(this.playerData.status === 'eliminated'){
       this.playerData.status = 'alive';
       this.removeStyle('eliminated');
+      this.playerEliminatedEvent.emit(false);
     }
   }
   applyRole(role: RoleAssignment){
@@ -57,5 +62,8 @@ export class PlayerCardComponent {
     if(index > -1){
       this.appliedStyle.splice(index,1);
     }
+  }
+  update(){
+
   }
 }

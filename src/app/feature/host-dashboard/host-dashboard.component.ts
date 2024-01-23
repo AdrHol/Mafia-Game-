@@ -51,12 +51,8 @@ export class HostDashboardComponent {
     if(this.playersService.getNumberOfPlayers() < 16){
       console.log(this.route);
       const component = this.playerContainer.createComponent(PlayerCardComponent);
-      // const playerEntity: Player = new Player (1, name, "alive", undefined, undefined, component);
-      this.playersService.createPlayer(1, name, "alive", undefined, undefined, component);
+      this.playersService.createPlayer(name, "alive", undefined, undefined, component);
       const componentInstance = component.instance;
-      // componentInstance.playerData =  playerEntity;
-      
-      // this.playerComponentsRefs.push(component);
 
       componentInstance.playerSelected.subscribe(($event)=>{
         this.receiveSelectedPlayer($event);
@@ -64,7 +60,6 @@ export class HostDashboardComponent {
 
       this.fullNameInput.nativeElement.value = '';
       this.gameLogicService.addPlayer();
-      console.log(this.gameLogicService.getPlayersCount());
       return false;
     } else {
       this.unsupportedPlayerCount();
@@ -72,16 +67,11 @@ export class HostDashboardComponent {
     }
     }
 
-    removePlayer(){
-      // this.playerComponentsRefs.forEach(reference => {
-      //   if(reference.instance === this.selectedPlayerComponent){
-      //     reference.destroy();
-      //     this.selectedPlayerComponent = undefined;
-      //     const index = this.playerComponentsRefs.indexOf(reference)
-      //     this.playerComponentsRefs.splice(index,1);
-      //     this.gameLogicService.removePlayer();
-      //   }
-      // });
+    removePlayer(id: number){
+      const isDeleted = this.playersService.deletePlayer(id);
+      if(isDeleted){
+        this.selectedPlayerComponent = undefined;
+      }
     }
 
     receiveSelectedPlayer(playerCard: PlayerCardComponent){
@@ -90,7 +80,7 @@ export class HostDashboardComponent {
     }
     
     drawRoles(){
-      // this.gameLogicService.prepareRoles(this.additionalRolesComponent.getCheckedRoles());
+      this.gameLogicService.drawRole(this.additionalRolesComponent.getCheckedRoles());
       // this.playerComponentsRefs.forEach(player => {
       //   const role = this.gameLogicService.drawRole();
       //   if(role !== undefined){

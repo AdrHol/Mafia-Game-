@@ -4,6 +4,7 @@ import { AdditionalRole } from '../../shared/model/additionalRole';
 import { RoundLogicService } from '../../core/round-logic.service';
 import { DataService } from '../../core/data.service';
 import { Message } from '../../shared/model/Message';
+import { PlayerDataService } from '../../core/player-data.service';
 
 
 @Injectable({
@@ -20,13 +21,11 @@ export class GameLogicService {
   private isGameStarted: boolean;
   private message: Message | undefined;
 // playerService with players state logic !!!!! 
-  constructor(private roundLogicService: RoundLogicService, private dataService: DataService) {
+  constructor(private roundLogicService: RoundLogicService,
+              private dataService: DataService,
+              private playersData: PlayerDataService) {
     this.MAFIACOUNTS = dataService.loadMafiaCounts();
     this.isGameStarted = false;
-  }
-
-  getPlayersCount(){
-    return this.numberOfPlayers;
   }
 
   addPlayer(){
@@ -49,8 +48,9 @@ export class GameLogicService {
       return;
     }
     
-    let citizens = this.getPlayersCount() - mafia;
-
+    let citizens = this.playersData.getNumberOfPlayers() - mafia;
+    console.log(mafia);
+    console.log(citizens);
     for (let i = 0; i < citizens ; i++){
       this.basicRoles.push("Citizen");
     }
@@ -62,10 +62,11 @@ export class GameLogicService {
     this.fillRemainingAdditionalRoles(citizens, mafia);
   }
 
-  drawRole(){
-    const lenghtOfRoles = this.basicRoles.length;
-     if(lenghtOfRoles > 0){
-      const randomBasicRoleIndex = Math.floor(Math.random() * lenghtOfRoles);
+  drawRole(additionalRoles: AdditionalRole[]){
+    this.prepareRoles(additionalRoles);
+
+     while(this.basicRoles.length > 0){
+      const randomBasicRoleIndex = Math.floor(Math.random() * this.basicRoles.length);
       const randomNeutralRoleIndex = Math.floor(Math.random() * this.additionalNeutralRoles.length);
       const randomNegativeRoleIndex = Math.floor(Math.random() * this.additionalNegativeRoles.length);
       const basicRole = this.basicRoles.splice(randomBasicRoleIndex, 1)[0];
@@ -73,11 +74,9 @@ export class GameLogicService {
                                                   : this.additionalNeutralRoles.splice(randomNeutralRoleIndex, 1)[0];
       const roleAssignment = new RoleAssignment(basicRole, additionalRole);
       this.finalRoles.push(roleAssignment);
-      return roleAssignment;
-     } else {
-      alert("No roles to draw");
-      return
+      // return roleAssignment;
      }
+     this.playersData.assignRoles(this.finalRoles);
   }
 
   includeAdditionalRoles(roles: string[]){
@@ -85,7 +84,7 @@ export class GameLogicService {
   }
 
   private computeMafiaMembers(){
-    const memebers = this.getPlayersCount();
+    const memebers = this.playersData.getNumberOfPlayers();
     switch(true) {
       case memebers < 6:
         return this.MAFIACOUNTS.get("TIER0");
