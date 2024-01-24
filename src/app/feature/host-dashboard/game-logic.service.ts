@@ -20,7 +20,7 @@ export class GameLogicService {
   private finalRoles: RoleAssignment[] = [];
   private isGameStarted: boolean;
   private message: Message | undefined;
-// playerService with players state logic !!!!! 
+
   constructor(private roundLogicService: RoundLogicService,
               private dataService: DataService,
               private playersData: PlayerDataService) {
@@ -74,13 +74,8 @@ export class GameLogicService {
                                                   : this.additionalNeutralRoles.splice(randomNeutralRoleIndex, 1)[0];
       const roleAssignment = new RoleAssignment(basicRole, additionalRole);
       this.finalRoles.push(roleAssignment);
-      // return roleAssignment;
      }
      this.playersData.assignRoles(this.finalRoles);
-  }
-
-  includeAdditionalRoles(roles: string[]){
-    
   }
 
   private computeMafiaMembers(){
@@ -100,17 +95,6 @@ export class GameLogicService {
         return 0;
     }
   }
-
-  loadAdditionalRoles(roles: AdditionalRole[]){
-    // roles.forEach(role =>{
-    //   if(role.isVillain){
-    //     this.additionalNegativeRoles.push(role);
-    //   } else {
-    //     this.additionalNeutralRoles.push(role);
-    //   }
-    // })
-  }
-
   private loadSelectedRoles(additionalRoles: AdditionalRole[]){
     additionalRoles.forEach(additionalRole => {
       if(additionalRole.isVillain){
@@ -122,16 +106,16 @@ export class GameLogicService {
   }
   
   start(){
-    if(this.numberOfPlayersCheck()){
+    if(this.startGameConditionCheck()){
       this.isGameStarted = true;
-      const roles = this.finalRoles.filter(role => role != undefined).map(role => role.additionalRole as AdditionalRole);
-      this.roundLogicService.startGame(roles);
+      this.roundLogicService.startRound();
     }
   }
 
   getGameState(){
     return this.isGameStarted;
   }
+
   getNextMessage(){
     if(this.message === undefined){
       const nextMessage = this.roundLogicService.getMessage();
@@ -139,7 +123,8 @@ export class GameLogicService {
         this.message = nextMessage
         return this.message.getDisplayedWakeMessage() || 'No message';
       }else {
-        return "NO MORE MESSAGES";
+        this.roundLogicService.checkWinningCondition() ? this.roundLogicService.getGameResult() : this.roundLogicService.startRound(); 
+        return "End of round. Next round begins";
       }
     } else {
       const message = this.message?.getDisplayedSleepMessage() || "No more messages";
@@ -147,6 +132,7 @@ export class GameLogicService {
       return message;
     }
   }
+
   private fillRemainingAdditionalRoles(numberOfCitizens: number, numberOfVillains: number){
     while(numberOfCitizens > this.additionalNeutralRoles.length){
       this.additionalNeutralRoles.push(new AdditionalRole(0, undefined, false, false));
@@ -166,4 +152,5 @@ export class GameLogicService {
       return true;
     }
   }
+  
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AdditionalRole } from '../shared/model/additionalRole';
+import { Message } from '../shared/model/Message';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +18,10 @@ export class DataService {
     return this.additionalRoles;
   }
   fetchGameMessages(){
-    return {
-      everyoneSleep: 'Wszyscy spia',
-      mafiaWake: 'Mafia się budzi',
-      citizensWake: 'Budzą się mieszkancy'
-    }
+    let messagesMap = new Map();
+    messagesMap.set('MAF', new Message('Mafia'));
+    messagesMap.set('ALL', new Message('Wszyscy'));
+    return messagesMap;
   }
   loadMafiaCounts(){
     const mafiaCounts = new Map();

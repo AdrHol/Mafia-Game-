@@ -33,8 +33,6 @@ export class HostDashboardComponent {
 
   additionalRolesList: AdditionalRole[];
 
-  // playerComponentsRefs: ComponentRef<PlayerCardComponent>[] = [];
-
   selectedPlayerComponent!: PlayerCardComponent | undefined;
 
   displayedMessage: string = '';
@@ -44,14 +42,14 @@ export class HostDashboardComponent {
               private playersService: PlayerDataService,
               private route: ActivatedRoute,){
         this.additionalRolesList = dataService.fetchAdditionalRoles();
-        this.gameLogicService.loadAdditionalRoles(this.additionalRolesList);
+        // this.gameLogicService.loadAdditionalRoles(this.additionalRolesList);
   }
 
   addPlayer(name: string){
     if(this.playersService.getNumberOfPlayers() < 16){
       console.log(this.route);
       const component = this.playerContainer.createComponent(PlayerCardComponent);
-      this.playersService.createPlayer(name, "alive", undefined, undefined, component);
+      this.playersService.createPlayer(name, "alive", undefined, component);
       const componentInstance = component.instance;
 
       componentInstance.playerSelected.subscribe(($event)=>{
@@ -81,12 +79,6 @@ export class HostDashboardComponent {
     
     drawRoles(){
       this.gameLogicService.drawRole(this.additionalRolesComponent.getCheckedRoles());
-      // this.playerComponentsRefs.forEach(player => {
-      //   const role = this.gameLogicService.drawRole();
-      //   if(role !== undefined){
-      //     player.instance.applyRole(role);
-      //   }
-      // })
     }
 
     startGame(event: Event){
