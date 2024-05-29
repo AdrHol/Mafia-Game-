@@ -1,0 +1,36 @@
+<div class="dashboard">
+    <div class="roomId" *ngIf="roomID"><p>Room id: {{roomID}}</p></div>
+    <div class="control_panel">
+        <div class="info_board">
+            <button id="prev_button" (click)="emitTestMessage()">Back</button>
+            <div class="display">
+                <button (click)="startGame($event)" #startGameButton *ngIf="checkGameState()">Start Game</button>
+                <p>{{displayedMessage}}</p>
+            </div>
+            <button id="next_button" (click)="getNextMessage()">Next</button>
+        </div>
+        <div class="actions">
+            <form action="#" (submit)="addPlayer(playerName.value, undefined)">
+                <button class="simple_button" >Add player</button>
+                <input type="text" id="player_name" #playerName>
+            </form>
+            <button class="simple_button" id="draw_roles" (click)="drawRoles()">Draw roles</button>
+            <button class="simple_button" (click)="expandAdditionalRoles()">Additional roles</button>
+        </div>
+        <div>
+            <app-additional-roles #additionalRoles [roles]="additionalRolesList"></app-additional-roles>
+        </div>
+        <div class="selecte_player_actions" *ngIf="selectedPlayerComponent">
+            <p class="selected_player_name">Name: {{selectedPlayerComponent.playerData.name}}</p>
+            <p>Role: {{selectedPlayerComponent.playerData.role}} {{selectedPlayerComponent.playerData.additionalRole}}</p>
+            <p>Status: {{selectedPlayerComponent.playerData.status}}</p>
+            <button class="simple_button" (click)="removePlayer(selectedPlayerComponent.playerData.id)">Remove player</button>
+            <button class="simple_button" (click)="selectedPlayerComponent.playerEliminated()">Eliminate player</button>
+            <button class="simple_button" (click)="selectedPlayerComponent.playerRestored()">Restore player</button>
+        </div>
+    </div>
+    <div class="gameboard">
+        <app-gameboard></app-gameboard>
+    </div>
+</div>
+

@@ -1,0 +1,35 @@
+/* You can add global styles to this file, and also import other style files */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body, html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+.container_applicatione {
+  width: 100vw;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+app-root{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+app-header{
+  height: 10%;
+}
+.router_container{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+app-footer{
+  height: 5%;
+}

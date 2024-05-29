@@ -1,0 +1,15 @@
+<div class="roles_view">
+    <ul class="roles_list">
+        <li *ngFor="let role of roles"
+        id={{role.id}} class="role_button"
+        (click)="selectRole(role)">
+        <a>{{role.name}}</a>
+        </li>
+    </ul>
+    <div class="role_frame">
+        <div>
+            <p>{{selectedRole?.name}}</p>
+            <p>{{selectedRole?.description}}</p>
+        </div>
+    </div>
+</div>
