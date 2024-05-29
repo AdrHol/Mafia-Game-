@@ -72,7 +72,8 @@ export class GameLogicService {
       const basicRole = this.basicRoles.splice(randomBasicRoleIndex, 1)[0];
       const additionalRole = basicRole === "Mafia"? this.additionalNegativeRoles.splice(randomNegativeRoleIndex,1)[0] 
                                                   : this.additionalNeutralRoles.splice(randomNeutralRoleIndex, 1)[0];
-      const roleAssignment = new RoleAssignment(basicRole, additionalRole);
+      // const roleAssignment = new RoleAssignment(basicRole, additionalRole);
+      const roleAssignment = {basicRole, additionalRole};
       this.finalRoles.push(roleAssignment);
      }
      this.playersData.assignRoles(this.finalRoles);

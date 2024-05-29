@@ -1,7 +1,8 @@
 <div class="dashboard">
+    <div class="roomId" *ngIf="roomID"><p>Room id: {{roomID}}</p></div>
     <div class="control_panel">
         <div class="info_board">
-            <button id="prev_button">Back</button>
+            <button id="prev_button" (click)="emitTestMessage()">Back</button>
             <div class="display">
                 <button (click)="startGame($event)" #startGameButton *ngIf="checkGameState()">Start Game</button>
                 <p>{{displayedMessage}}</p>
@@ -9,7 +10,7 @@
             <button id="next_button" (click)="getNextMessage()">Next</button>
         </div>
         <div class="actions">
-            <form action="#" (submit)="addPlayer(playerName.value)">
+            <form action="#" (submit)="addPlayer(playerName.value, undefined)">
                 <button class="simple_button" >Add player</button>
                 <input type="text" id="player_name" #playerName>
             </form>

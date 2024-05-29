@@ -5,14 +5,14 @@ import { Subscription } from 'rxjs';
 import { RoleAssignment } from './roleAssignment';
 
 export class Player {
-    id: number;
+    id: string;
     name: string;
     status: string;
     role: RoleAssignment | undefined;
     playerComponent: ComponentRef<PlayerCardComponent>;
     stateEvent: Subscription;
 
-    constructor(id: number,
+    constructor(id: string,
                 name: string,
                 status: string,
                 role: RoleAssignment | undefined,

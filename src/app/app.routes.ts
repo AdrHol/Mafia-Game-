@@ -6,6 +6,7 @@ import { PlayerViewComponent } from './feature/player-view/player-view.component
 import { RolePageComponent } from './shared/role-page/role-page.component';
 
 export const routes: Routes = [
+    {path:'host/:roomid', component:HostDashboardComponent},
     {path:'offline', component: HostDashboardComponent},
     {path:'online', component: NewRoomComponent},
     {path:'join', component: PlayerViewComponent},

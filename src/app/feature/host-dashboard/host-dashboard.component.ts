@@ -1,23 +1,23 @@
-import { Component, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, ViewChild, ViewContainerRef, OnInit } from '@angular/core';
 import { PlayerCardComponent } from './player-card/player-card.component';
 import { GameboardComponent } from './gameboard/gameboard.component';
 import { AdditionalRolesComponent } from './additional-roles/additional-roles.component';
-import { Player } from '../../shared/model/player';
 import { NgClass, NgIf } from '@angular/common';
 import { GameLogicService } from './game-logic.service';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../../core/data.service';
 import { AdditionalRole } from '../../shared/model/additionalRole';
 import { PlayerDataService } from '../../core/player-data.service';
+import { IMessage } from '@stomp/stompjs';
 
 @Component({
   selector: 'app-host-dashboard',
   standalone: true,
   imports: [GameboardComponent, NgIf, AdditionalRolesComponent, NgClass],
   templateUrl: './host-dashboard.component.html',
-  styleUrl: './host-dashboard.component.css'
+  styleUrl: './host-dashboard.component.css',
 })
-export class HostDashboardComponent {
+export class HostDashboardComponent implements OnInit{
 
   @ViewChild(GameboardComponent, {read: ViewContainerRef})
   playerContainer!: ViewContainerRef;
@@ -31,6 +31,8 @@ export class HostDashboardComponent {
   @ViewChild('startGameButton')
   startGameButton: any;
 
+  roomID: string | undefined;
+
   additionalRolesList: AdditionalRole[];
 
   selectedPlayerComponent!: PlayerCardComponent | undefined;
@@ -42,14 +44,27 @@ export class HostDashboardComponent {
               private playersService: PlayerDataService,
               private route: ActivatedRoute,){
         this.additionalRolesList = dataService.fetchAdditionalRoles();
-        // this.gameLogicService.loadAdditionalRoles(this.additionalRolesList);
   }
 
-  addPlayer(name: string){
+  ngOnInit(): void {
+    const pathRoomId = this.route.snapshot.paramMap.get('roomid');
+    const tokenRoom = this.route.snapshot.queryParamMap.get('auth');
+    console.log(tokenRoom);
+    console.log(this.route.snapshot);
+    if(pathRoomId){
+      this.roomID = pathRoomId;
+      this.playersService.openConnection();
+      this.playersService.getWebSocket().subscribeToTopic(`/topic/room/${pathRoomId}` ,(message: IMessage) => {
+        const json = JSON.parse(message.body);
+        this.addPlayer(json['name'], json['id']);
+      }, 'admin', tokenRoom || "");
+    }
+  }
+
+  addPlayer(name: string, id: string | undefined){
     if(this.playersService.getNumberOfPlayers() < 16){
-      console.log(this.route);
       const component = this.playerContainer.createComponent(PlayerCardComponent);
-      this.playersService.createPlayer(name, "alive", undefined, component);
+      this.playersService.createPlayer(id, name, "alive", undefined, component);
       const componentInstance = component.instance;
 
       componentInstance.playerSelected.subscribe(($event)=>{
@@ -62,10 +77,13 @@ export class HostDashboardComponent {
     } else {
       this.unsupportedPlayerCount();
       return false;
-    }
+    } 
     }
 
-    removePlayer(id: number){
+    emitTestMessage(){
+      this.playersService.sendTest();
+    }
+    removePlayer(id: string){
       const isDeleted = this.playersService.deletePlayer(id);
       if(isDeleted){
         this.selectedPlayerComponent = undefined;
@@ -79,6 +97,7 @@ export class HostDashboardComponent {
     
     drawRoles(){
       this.gameLogicService.drawRole(this.additionalRolesComponent.getCheckedRoles());
+      this.playersService.sendState();
     }
 
     startGame(event: Event){

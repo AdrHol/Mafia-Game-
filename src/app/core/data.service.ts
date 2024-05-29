@@ -11,7 +11,7 @@ export class DataService {
   constructor() { 
     this.additionalRoles = [new AdditionalRole(1, 'Detevtive', false,true),
                             new AdditionalRole(2, 'Boss', true, true),
-                            new AdditionalRole(3, 'Kot', false, false)];
+                            new AdditionalRole(3, 'Cat', false, false)];
   }
 
   fetchAdditionalRoles(){
@@ -20,7 +20,7 @@ export class DataService {
   fetchGameMessages(){
     let messagesMap = new Map();
     messagesMap.set('MAF', new Message('Mafia'));
-    messagesMap.set('ALL', new Message('Wszyscy'));
+    messagesMap.set('ALL', new Message('Everyone'));
     return messagesMap;
   }
   loadMafiaCounts(){

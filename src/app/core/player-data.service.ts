@@ -1,25 +1,40 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector} from '@angular/core';
 import { Player } from '../shared/model/player';
 import { RoleAssignment } from '../shared/model/roleAssignment';
 import { AdditionalRole } from '../shared/model/additionalRole';
-import { v4 as uuidv4 } from 'uuid';
+import { WebSocketService } from './web-socket.service';
+import { ActivatedRoute } from '@angular/router';
+import { IMessage } from '@stomp/stompjs';
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerDataService {
   private players: Player[] = [];
-  constructor() { }
+  private sub: any;
+
+  constructor(private websocket: WebSocketService) {
+  }
+
+  openConnection(){
+    this.websocket.connect('Host');
+  }
 
   getNumberOfPlayers(){
     return this.players.length;
   }
+  
+  getWebSocket(){
+    return this.websocket;
+  }
 
-  createPlayer(name: string, status: string, role: RoleAssignment | undefined, component: any){
-    const playerEntity: Player = new Player (this.players.length + 1, name, status, role, component);
+  createPlayer(id: string | undefined, name: string, status: string, role: RoleAssignment | undefined, component: any){
+    const playerId = id ? id : (this.players.length + 1).toString();
+    const playerEntity: Player = new Player (playerId, name, status, role, component);
     component.instance.playerData = playerEntity.getPlayerData();
     this.players.push(playerEntity);
   }
-  deletePlayer(id: number){
+
+  deletePlayer(id: string){
     const playerEntity = this.players.filter(player => player.id === id)[0];
 
     if(playerEntity){
@@ -42,7 +57,7 @@ export class PlayerDataService {
     })
   }
 
-  getPlayerInfo(id: number){
+  getPlayerInfo(id: string){
     return this.players.filter(player => player.id === id).map(player => player.getPlayerData());
   }
 
@@ -55,5 +70,22 @@ export class PlayerDataService {
   }
   getCountOfActiveMafia(){
     return this.players.filter(player => player.role?.basicRole === 'Mafia' && player.status === 'alive').length;
+  }
+
+  sendState(){
+    this.players.forEach((player)=>{
+      const body = {
+        playerId: player.id,
+        playerName: player.name,
+        gameStared: false,
+        isPlayerAlive: false,
+        playerRole: player.role
+      };
+      this.websocket.sendMessage(body);
+    })
+  }
+
+  sendTest(){
+    
   }
 }

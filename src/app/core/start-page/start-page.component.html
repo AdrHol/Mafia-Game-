@@ -6,9 +6,14 @@
         </li>
         <li class="game_start_buttons_row">
             <label for="roomId">
-                <input type="text" placeholder="room id" id="roomId" class="standard_input">
+                <input type="text" placeholder="room id" id="roomId" class="standard_input" #roomInput>
             </label>
-                <a class="standard_button" routerLink="/join">Dołącz</a>
+                <a class="standard_button" (click)="joinRoom(roomInput.value, playerName.value)">JOIN</a>
+        </li>
+        <li class="game_start_buttons_row">
+            <label for="playerName">
+                <input type="text" placeholder="Player name" id="playerName" class="standard_input" #playerName>
+            </label>
         </li>
     </ul>
 </div>

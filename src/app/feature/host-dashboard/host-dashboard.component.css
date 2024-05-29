@@ -1,5 +1,6 @@
 .dashboard {
     display: flex;
+    position: relative;
     flex-direction: row;
     gap: 30px;
 }
@@ -26,12 +27,15 @@
 
 .gameboard {
     display: grid;
-    max-width: 45vw;
-    max-height: 60vh;
+    width: 45vw;
+    height: 60vh;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(4, 1fr);
     grid-column-gap: 20px;
     grid-row-gap: 14px;
+    border: 16px groove #dd914b;
+    background-image: url('/../../assets/images/9461639.jpeg');
+    background-size: cover;
 }
 app-gameboard {
     display: none;
@@ -64,4 +68,8 @@ form{
 #player_name {
     padding: 5px;
     width: 26%;
+}
+.roomId{
+    position: absolute;
+    top: -1rem;
 }

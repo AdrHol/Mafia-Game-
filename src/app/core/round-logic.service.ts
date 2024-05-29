@@ -40,9 +40,9 @@ export class RoundLogicService {
   }
   getGameResult(){
     if (this.checkCitizenWin()){
-      alert('MIESZKAŃCY WYGRALI');
+      alert('CITIZENS WON');
     } else {
-      alert('MAFIA WYGRAŁA');
+      alert('MAFIA WON');
     }
   }
   private prepareOrder(rolesList: AdditionalRole[]){

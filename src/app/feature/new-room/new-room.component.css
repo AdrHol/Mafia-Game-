@@ -1,0 +1,21 @@
+.standard_button{
+    display: inline-block;
+    -webkit-box-shadow: 3px 3px 0px 0px #000000; 
+    box-shadow: 3px 3px 0px 0px #000000;
+    background-color: rgb(33, 39, 54);
+    color: cornsilk;
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 5px;
+    text-decoration: none;
+    margin: 5px;
+    transition: all 0.5s ease-out;
+}
+.standard_button:hover {
+    -moz-transform: translate(-4px, -4px);
+    -webkit-transform: translate(-4px, -4px);
+    -o-transform: translate(-4px, -4px);
+    -ms-transform: translate(-4px, -4px);
+    transform: translate(-2px, -2px);
+    box-shadow: 9px 9px 10px 0px #000000;
+}

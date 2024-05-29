@@ -1,5 +1,5 @@
 export interface PlayerDisplayValues {
-    id: number,
+    id: string,
     name: string | undefined,
     role: string | undefined,
     status: string,

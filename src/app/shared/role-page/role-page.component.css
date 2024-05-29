@@ -22,7 +22,7 @@ li {
 }
 
 .role_frame {
-    min-width: 200px;
+    width: 200px;
     min-height: 250px;
     border: 2px solid black;
     border-radius: 5px;
